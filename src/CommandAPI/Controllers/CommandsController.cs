@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CommandAPI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,37 @@ namespace CommandAPI.Controllers
         {
             // return new string[] {"this", "is", "hard", "coded"};
             return _context.CommandItems;
+        }
+
+        //GET:  api/commands/{Id}
+        [HttpGet("{id}")]
+        public ActionResult<Command> GetCommandItem(int id)
+        {
+            var commandItem = _context.CommandItems.Find(id);
+
+            if(commandItem == null)
+            {
+                return NotFound();
+            }
+
+            return commandItem;
+        }
+
+        //POST:     api/commands
+        [HttpPost]
+        public ActionResult<Command> PostCommandItem(Command command)
+        {
+            _context.CommandItems.Add(command);
+
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
+            }
+            return CreatedAtAction("GetCommandItem", new Command { Id = command.Id }, command);
         }
     }
 }
