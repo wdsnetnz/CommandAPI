@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using CommandAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace CommandAPI.Controllers
 {
@@ -49,6 +49,21 @@ namespace CommandAPI.Controllers
                 return BadRequest();
             }
             return CreatedAtAction("GetCommandItem", new Command { Id = command.Id }, command);
+        }
+
+        //PUT:      api/commands/{Id}
+        [HttpPut("{Id}")]
+        public ActionResult PutCommandItem(int id, Command command)
+        {
+            if (id != command.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(command).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return NoContent();
         }
     }
 }

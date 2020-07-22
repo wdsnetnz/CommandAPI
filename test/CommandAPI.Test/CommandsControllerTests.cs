@@ -211,6 +211,130 @@ namespace CommandAPI.Test
             //Then
             Assert.Equal(oldCount + 1, dbContext.CommandItems.Count());
         }
-        
+
+        // TEST 3.2 VALID OBJECT SUBMITTED – 201 CREATED RETURN CODE
+        [Fact]
+        public void PostCommandItem_Returns201Created_WhenValidObject()
+        {
+            //Given
+            var command = new Command
+            {
+                HowTo = "Do Something",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+
+            //When
+            var result = controller.PostCommandItem(command);
+
+            //Then
+            Assert.IsType<CreatedAtActionResult>(result.Result);
+        }
+
+        // TEST 4.1 VALID OBJECT SUBMITTED – ATTRIBUTE IS UPDATED
+        [Fact]
+        public void PutCommandItem_AttributeUpdated_WhenValidObject()
+        {
+            //Given
+            var command = new Command
+            {
+                HowTo = "Do Something",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var cmdId = command.Id;
+            command.HowTo = "UPDATED";
+
+            //When
+            controller.PutCommandItem(cmdId, command);
+            var result = dbContext.CommandItems.Find(cmdId);
+
+            //Then
+            Assert.Equal(command.HowTo, result.HowTo);
+        }
+
+        // TEST 4.2 VALID OBJECT SUBMITTED – 204 RETURN CODE
+        [Fact]
+        public void  PutCommandItem_Returns204_WhenValidObject()
+        {
+            //Given
+            var command = new Command
+            {
+                HowTo = "Do Something",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var cmdId = command.Id;
+            command.HowTo = "UPDATED";
+
+            //When
+            var result = controller.PutCommandItem(cmdId, command);
+
+            //Then
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        // TEST 4.3 INVALID OBJECT SUBMITTED – 400 RETURN CODE
+        [Fact]
+        public void PutCommandItem_Returns400_WhenInvalidObject()
+        {
+            //Given
+            var command = new Command
+            {
+                HowTo = "Do Something",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+            
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var cmdId = command.Id + 1;
+            command.HowTo = "UPDATED";
+
+            //When
+            var result = controller.PutCommandItem(cmdId, command);
+
+            //Then
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        // TEST 4.4 INVALID OBJECT SUBMITTED – OBJECT REMAINS UNCHANGED
+        [Fact]
+        public void PutCommandItem_AttributeUnchanged_WhenInvalidObject()
+        {
+            //Given
+            var commandRecordOne = new Command
+            {
+                HowTo = "Do Something",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+            
+            dbContext.CommandItems.Add(commandRecordOne);
+            dbContext.SaveChanges();
+            
+            var commandRecordTwo = new Command
+            {
+                HowTo = "Do Something",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+
+            //When
+            controller.PutCommandItem(commandRecordOne.Id + 1, commandRecordTwo);
+            var result = dbContext.CommandItems.Find(commandRecordOne.Id); 
+
+            //Then
+            Assert.Equal(commandRecordOne.HowTo, result.HowTo);
+        }
     }
 }
