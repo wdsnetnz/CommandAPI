@@ -336,5 +336,92 @@ namespace CommandAPI.Test
             //Then
             Assert.Equal(commandRecordOne.HowTo, result.HowTo);
         }
+
+        // TEST 5.1 VALID OBJECT ID SUBMITTED – OBJECT COUNT DECREMENTS BY 1
+        [Fact]
+        public void DeleteCommandItem_ObjectsDecrement_WhenValidObjectID()
+        {
+            //Given
+            var command = new Command
+            {
+                HowTo = "Do Something",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+            
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var cmdId = command.Id;
+            var objCount = dbContext.CommandItems.Count();
+
+            //When
+            controller.DeleteCommandItem(cmdId);
+
+            //Then
+            Assert.Equal(objCount - 1, dbContext.CommandItems.Count());
+        }
+
+        // TEST 5.2 VALID OBJECT ID SUBMITTED – 200 OK RETURN CODE
+        [Fact]
+        public void  DeleteCommandItem_Returns200OK_WhenValidObjectID()
+        {
+            //Given
+            var command = new Command
+            {
+                HowTo = "Do Something",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var cmdId = command.Id;
+
+            //When
+            var result = controller.DeleteCommandItem(cmdId); 
+            
+            //Then
+            Assert.Null(result.Result);
+        }
+
+        // TEST 5.3 INVALID OBJECT ID SUBMITTED – 404 NOT FOUND RETURN CODE
+        [Fact]
+        public void DeleteCommandItem_Returns404NotFound_WhenValidObjectID()
+        {
+            //Given
+            
+            //When
+            var result = controller.DeleteCommandItem(-1); 
+            
+            //Then
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+
+        // TEST 5.4 VALID OBJECT ID SUBMITTED – OBJECT COUNT REMAINS UNCHANGED
+        [Fact]
+        public void  DeleteCommandItem_ObjectCountNotDecremented_WhenValidObjectID()
+        {
+            //Given
+            var command = new Command
+            {
+                HowTo = "Do Something",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+
+            dbContext.CommandItems.Add(command);
+            dbContext.SaveChanges();
+
+            var cmdId = command.Id;
+            var objCount = dbContext.CommandItems.Count();
+            
+            //When
+            var result = controller.DeleteCommandItem(cmdId + 1); 
+
+            //Then
+            Assert.Equal(objCount, dbContext.CommandItems.Count());
+        }
     }
 }
