@@ -24,6 +24,7 @@ steps:
 # Test Steps...
 # do this after other tasks such as building
 - task: DotNetCoreCLI@2
+  displayName: Run Test
   inputs:
     command: test
     projects: '**/*Test/*.csproj'
