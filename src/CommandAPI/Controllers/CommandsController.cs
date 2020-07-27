@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using CommandAPI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -16,8 +17,17 @@ namespace CommandAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Command>> GetCommandItems()
         {
-            // return new string[] {"this", "is", "hard", "coded", "Array", "Azure"};
-            return _context.CommandItems;
+            var command = new Command
+            {
+                HowTo = "Do Something",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+
+            List<Command> commandLst = new List<Command>();
+            commandLst.Add(command);
+
+            return commandLst;
         }
 
         //GET:  api/commands/{Id}
