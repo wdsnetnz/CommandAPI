@@ -20,10 +20,12 @@ namespace CommandAPI.Controllers
             return _context.CommandItems;
         }
 
-         public ActionResult<IEnumerable<Command>> GetCommandItems(string all)
+        [HttpGet("{id}/like/{likeId}")]
+        public ActionResult<IEnumerable<Command>> GetAllCommandItems(int id, int likeId)
         {
             var command = new Command
             {
+                Id = 1000000000,
                 HowTo = "Do Something",
                 Platform = "Some Platform",
                 CommandLine = "Some Command"
