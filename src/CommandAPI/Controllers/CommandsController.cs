@@ -37,6 +37,35 @@ namespace CommandAPI.Controllers
             return commandLst;
         }
 
+        // http://www.binaryintellect.net/articles/9db02aa1-c193-421e-94d0-926e440ed297.aspx
+        // The action name is GetCommandByHowTo, To invoke this action you need to explicitly specify the action name in the URL.
+        // http://localhost:5000/api/commands/GetCommandByHowTo/dosomething
+
+        [Route("[action]/{howto}")]
+        [HttpGet]
+        public ActionResult<IEnumerable<Command>> GetCommandByHowTo(string howto)
+        {
+            var command = new Command
+            {
+                Id = 1000000000,
+                HowTo = "Do Something",
+                Platform = "Some Platform",
+                CommandLine = "Some Command"
+            };
+
+            List<Command> commandLst = new List<Command>();
+            commandLst.Add(command);
+
+            return commandLst;
+        }
+
+        [Route("[action]/{howto}")]
+        [HttpGet]
+        public ActionResult<IEnumerable<string>> GetCommandsInString(string howto)
+        {
+            return new string[] {"this", "is", "hard", "coded", "Array", "Azure"};            
+        }
+
         //GET:  api/commands/{Id}
         [HttpGet("{id}")]
         public ActionResult<Command> GetCommandItem(int id)
