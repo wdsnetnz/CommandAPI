@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using CommandAPI.Models;
 using Microsoft.AspNetCore.Mvc;
